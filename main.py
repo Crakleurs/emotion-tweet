@@ -27,7 +27,7 @@ results = cursor.fetchall()
 
 for row in results:
     campaign = CampaignModel(row)
-    cursor.execute('select count(*) from public."EmotionModels" WHERE "CampaignModelId" = ' + str(campaign.id))
+    cursor.execute('select count(*) from public."EmotionModels" WHERE "CampaignId" = ' + str(campaign.id))
     count = cursor.fetchone()
     count = count[0]
     res = sntwitter.TwitterHashtagScraper(campaign.hashtag).get_items()
@@ -40,7 +40,7 @@ for row in results:
 
         count += 1
         if count % 100 == 0:
-            execute_values(cursor, 'insert into public."EmotionModels" (joy, optimism, anger, sadness, hate, irony, offensive, positive, neutral, negative, "CampaignModelId") values %s', [emotion.to_tuple() for emotion in emotions])
+            execute_values(cursor, 'insert into public."EmotionModels" (joy, optimism, anger, sadness, hate, irony, offensive, positive, neutral, negative, "CampaignId") values %s', [emotion.to_tuple() for emotion in emotions])
             conn.commit()
             emotions = []
 
@@ -48,7 +48,7 @@ for row in results:
             break
 
     if(len(emotions) > 0):
-        execute_values(cursor,'insert into public."EmotionModels" (joy, optimism, anger, sadness, hate, irony, offensive, positive, neutral, negative, "CampaignModelId") values %s', [emotion.to_tuple() for emotion in emotions])
+        execute_values(cursor,'insert into public."EmotionModels" (joy, optimism, anger, sadness, hate, irony, offensive, positive, neutral, negative, "CampaignId") values %s', [emotion.to_tuple() for emotion in emotions])
         conn.commit()
         emotions = []
 
